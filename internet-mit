@@ -1,0 +1,27 @@
+#!/bin/bash
+
+proxy_ip="172.16.19.10"
+proxy_port=80
+
+gsettings set org.gnome.system.proxy mode "manual"
+gsettings set org.gnome.system.proxy.http host $proxy_ip
+gsettings set org.gnome.system.proxy.http port $proxy_port
+gsettings set org.gnome.system.proxy.https host $proxy_ip
+gsettings set org.gnome.system.proxy.https port $proxy_port
+gsettings set org.gnome.system.proxy.ftp host $proxy_ip
+gsettings set org.gnome.system.proxy.ftp port $proxy_port
+
+echo "Manual proxy enabled, redirecting http, https, and ftp requests to $proxy_ip:$proxy_port"
+echo "Be careful, a ^C doesn't reset the proxy, type 'quit\n' for a clean exit"
+
+while read -r line; do
+    if [ "$line" == "quit" ]; then
+	gsettings set org.gnome.system.proxy mode "auto"
+	echo "Manual proxy disabled, default routes re-setted. Exiting..."
+	exit 0
+    else
+	echo "Type 'quit\n' for a clean exit"
+    fi
+done
+
+exit 1
